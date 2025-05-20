@@ -1,23 +1,17 @@
-# 使用 PHP + Apache 基礎映像檔
 FROM php:8.1-apache
 
-# 安裝 Composer
+# 安裝必要套件（composer需要 zip）
+RUN apt-get update && apt-get install -y zip unzip
+
+# 安裝 composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# 設定 Apache 文件根目錄
-ENV APACHE_DOCUMENT_ROOT /var/www/html
-
-# 啟用 mod_rewrite（若你需要 .htaccess）
-RUN a2enmod rewrite
-
-# 複製檔案
+# 複製專案進去
 COPY . /var/www/html
 
-# 切換工作目錄
 WORKDIR /var/www/html
 
-# 安裝 PHP 套件
+# 執行 composer install
 RUN composer install
 
-# 開放 80 埠
 EXPOSE 80
